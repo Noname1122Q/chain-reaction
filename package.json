@@ -1,0 +1,15 @@
+{
+  "name": "chain-reaction",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:server": "bun --filter @chain/server dev",
+    "dev:web": "bun --filter @chain/web dev",
+    "build:web": "bun --filter @chain/web build",
+    "typecheck": "bun --filter '*' typecheck",
+    "test": "bun test"
+  }
+}
