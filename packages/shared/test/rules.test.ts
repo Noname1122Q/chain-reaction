@@ -63,6 +63,54 @@ describe("explosions", () => {
     expect(r.waves.length).toBe(1);
     expect(r.state.board[0][0]).toEqual({ owner: null, count: 0 });
     expect(r.state.board[0][1]).toEqual({ owner: 0, count: 1 });
-    expect(r.state.board[1][0]).toEqual({ owner: 1, count: 1 });
+    expect(r.state.board[1][0]).toEqual({ owner: 0, count: 1 });
+  });
+
+  test("explosions capture opponent orbs and can win the game", () => {
+    let s = newGame();
+    s = play(s, 0, 0).state;
+    s = play(s, 0, 1).state;
+
+    const r = play(s, 0, 0);
+    expect(r.state.board[0][1]).toEqual({ owner: 0, count: 2 });
+    expect(r.state.winner).toBe(0);
+  });
+
+  test("no winner is declared before both players have moved", () => {
+    const r = play(newGame(), 4, 3);
+    expect(r.state.winner).toBeNull();
+  });
+
+  test("chain reactions produce several waves and conserve orbs", () => {
+    const s = position([
+      [0, 0, 0, 1],
+      [0, 1, 0, 2],
+      [5, 5, 1, 1],
+    ]);
+
+    const r = play(s, 0, 0);
+    expect(r.waves.length).toBe(2);
+    expect(total(r.state)).toBe(total(s) + 1);
+  });
+});
+
+describe("invariants", () => {
+  test("random games conserve orbs and never throw", () => {
+    for (let game = 0; game < 200; game++) {
+      let s = newGame();
+      let played = 0;
+
+      while (s.winner === null && played < 400) {
+        const moves = legalMoves(s);
+        if (moves.length === 0) break;
+
+        const [r, c] = moves[Math.floor(Math.random() * moves.length)];
+
+        s = play(s, r, c).state;
+        played++;
+
+        expect(total(s)).toBe(played);
+      }
+    }
   });
 });
