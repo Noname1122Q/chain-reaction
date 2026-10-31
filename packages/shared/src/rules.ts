@@ -1,4 +1,4 @@
-import { Board, COLS, Coord, GameState, PlayerId, ROWS } from "./types";
+import { Board, COLS, Coord, GameState, PlayerId, ROWS, Wave } from "./types";
 
 const DIRS = [
   [-1, 0],
@@ -64,4 +64,81 @@ export function newGame(): GameState {
     moves: [0, 0],
     winner: null,
   };
+}
+
+export function isLegal(state: GameState, r: number, c: number): boolean {
+  if (state.winner !== null || !inBounds(r, c)) return false;
+
+  const owner = state.board[r][c].owner;
+
+  return owner === null || owner === state.turn;
+}
+
+export function legalMoves(state: GameState) {
+  const moves = [];
+
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      if (isLegal(state, r, c)) moves.push([r, c]);
+    }
+  }
+
+  return moves;
+}
+
+export function play(
+  state: GameState,
+  r: number,
+  c: number,
+): { state: GameState; waves: Wave[] } {
+  if (!isLegal(state, r, c)) throw new Error("Illegal move");
+
+  const player = state.turn;
+  const board = cloneBoard(state.board);
+
+  const moves: [number, number] = [state.moves[0], state.moves[1]];
+  moves[player] += 1;
+
+  const bothHaveMoved = moves[0] > 0 && moves[1] > 0;
+
+  board[r][c].owner = player;
+  board[r][c].count += 1;
+
+  const waves: Wave[] = [];
+  while (waves.length < MAX_WAVES) {
+    const unstable: Coord[] = [];
+
+    for (let i = 0; i < ROWS; i++) {
+      for (let j = 0; j < COLS; j++) {
+        if (board[i][j].count >= criticalMass(i, j))
+          unstable.push({ r: i, c: j });
+      }
+    }
+
+    if (unstable.length == 0) break;
+
+    for (const { r: ur, c: uc } of unstable) {
+      const cell = board[ur][uc];
+      cell.count -= criticalMass(ur, uc);
+
+      if (cell.count === 0) cell.owner = null;
+
+      for (const n of neighbors(ur, uc)) {
+        board[n.r][n.c].count += 1;
+        board[n.r][n.c].owner = player;
+      }
+    }
+
+    waves.push({ exploded: unstable, board: cloneBoard(board) });
+
+    if (bothHaveMoved && soleOwner(board) !== null) break;
+  }
+
+  const winner = bothHaveMoved ? soleOwner(board) : null;
+
+  return { state: { board, turn: other(player), moves, winner }, waves };
+}
+
+export function passTurn(state: GameState): GameState {
+  return { ...state, turn: other(state.turn) };
 }
