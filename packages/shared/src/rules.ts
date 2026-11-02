@@ -74,8 +74,8 @@ export function isLegal(state: GameState, r: number, c: number): boolean {
   return owner === null || owner === state.turn;
 }
 
-export function legalMoves(state: GameState) {
-  const moves = [];
+export function legalMoves(state: GameState): Array<[number, number]> {
+  const moves: Array<[number, number]> = [];
 
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
