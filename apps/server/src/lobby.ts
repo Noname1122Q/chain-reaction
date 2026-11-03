@@ -79,6 +79,13 @@ export function findMatch(s: Session): void {
   });
 }
 
+export function cancelSearch(s: Session): void {
+  if (!s.searching) return;
+
+  stopSearch(s);
+  s.send({ type: "search_cancelled" });
+}
+
 export function handleMove(s: Session, r: number, c: number): void {
   const game = gameOf(s);
   const seat = game?.seatOf(s) ?? null;
