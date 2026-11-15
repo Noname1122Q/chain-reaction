@@ -1,0 +1,189 @@
+:root {
+  --bg: #0f1220;
+  --card: #181c30;
+  --grid: #2b3157;
+  --text: #e8ebff;
+  --p0: #ff5d6c;
+  --p1: #4aa8ff;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+}
+.app {
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 16px;
+}
+.title {
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--card);
+  padding: 20px;
+  border-radius: 12px;
+}
+input,
+button {
+  font: inherit;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(-- grid);
+}
+input {
+  background: var(--bg);
+  color: var(--text);
+}
+button {
+  background: #3b5bff;
+  color: #fff;
+  border: 0;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+button.secondary {
+  background: transparent;
+  border: 1px solid var(--grid);
+  color: var(--text);
+}
+.error {
+  color: #ff8a8a;
+  margin: 0;
+}
+.notice {
+  color: #ffd27a;
+  margin: 0;
+}
+.game {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.chip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+.chip.p0 {
+  background: var(--p0);
+  color: #1a0a0c;
+}
+.chip.p1 {
+  background: var(--p1);
+  color: #04121f;
+}
+.turn {
+  text-align: center;
+  margin: 0;
+  font-weight: 600;
+}
+.timer {
+  margin-left: 8px;
+  opacity: 0.8;
+}
+.timer.low {
+  color: #ff8a8a;
+  opacity: 1;
+}
+.board {
+  display: grid;
+  gap: 3px;
+  padding: 3px;
+  background: var(--grid);
+  border-radius: 8px;
+  aspect-ratio: 6 / 9;
+  width: 100%;
+}
+.cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: var(--bg);
+  border: 2px solid transparent;
+  border-radius: 4px;
+}
+.cell:disabled {
+  opacity: 1;
+  cursor: default;
+}
+.cell:not(:disabled):hover {
+  outline: 2px solid rgba(255, 255, 255, 0.25);
+}
+.cell.p0 {
+  border-color: var(--p0);
+  color: var(--p0);
+}
+.cell.p1 {
+  border-color: var(--p1);
+  color: var(--p1);
+}
+.orbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  width: 62%;
+  height: 62%;
+  gap: 2px;
+  animation: spin 3s linear infinite;
+}
+
+.orbs.fast {
+  animation-duration: 0.7s;
+}
+.orb {
+  width: 42%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: currentColor;
+}
+.cell.boom {
+  animation: boom 0.34s ease-out;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes boom {
+  0% {
+    background: #ffffff;
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+  100% {
+    background: var(--bg);
+    transform: scale(1);
+  }
+}
+.overlay {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(320px, 90vw);
+  height: fit-content;
+  text-align: center;
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.7);
+}
