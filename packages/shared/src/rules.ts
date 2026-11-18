@@ -1,4 +1,5 @@
-import { Board, COLS, Coord, GameState, PlayerId, ROWS, Wave } from "./types";
+import { COLS, ROWS } from "./types";
+import type { Board, Coord, GameState, PlayerId, Wave } from "./types";
 
 const DIRS = [
   [-1, 0],
