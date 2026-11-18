@@ -37,7 +37,7 @@ button {
   font: inherit;
   padding: 10px 12px;
   border-radius: 8px;
-  border: 1px solid var(-- grid);
+  border: 1px solid var(--grid);
 }
 input {
   background: var(--bg);
