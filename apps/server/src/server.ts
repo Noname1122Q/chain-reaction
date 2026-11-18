@@ -114,9 +114,11 @@ export function createServer(port: number) {
       }
 
       const ip =
-        req.headers.get("fly-client-ip") ??
+        req.headers.get("cf-connecting-ip") ??
+        req.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
         server.requestIP(req)?.address ??
         "unknown";
+
       if ((connectionsPerIP.get(ip) ?? 0) >= CONFIG.maxConnectionsPerIP) {
         return new Response("Too mny connections", { status: 429 });
       }
